@@ -8,14 +8,19 @@ const storage = multer.diskStorage({
         cb(null, 'upload/');
     },
     filename : (req, file, cb) => {
-        console.log(file);
-        const fileName = stringutils.uuidgen() + req.params.id + '.jpg';
-        cb(null, fileName);
+        const originFileName = file.originalname;
+        const fileSize = file.size;
+        console.log('fileSize : ' + fileSize);
+        var lastDot = originFileName.lastIndexOf('.');
+        var fileExt = originFileName.substring(lastDot, originFileName.length).toLowerCase();
+        const savedFileName = originFileName.substring(0, lastDot) + '-' + stringutils.uuidgen() + fileExt;
+        cb(null, savedFileName);
     }
 });
 
 const upload = multer({
-    storage : storage
+    storage : storage,
+    limits: { fileSize: 1 * 1024 * 1024 }
 }).single('myfile');
 
 fileRouter.post('/upload/:id', (req, res, next) => {

@@ -5,4 +5,6 @@ const uuidgen = function () {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 };
 
-module.exports = uuidgen;
+module.exports = {
+    uuidgen : uuidgen
+};
