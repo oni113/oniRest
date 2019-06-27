@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var goodsRouter = require('./routes/goods');
 var fileuploadRouter = require('./routes/fileupload');
+var todosRouter = require('./routes/todos');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use('/users', usersRouter);
 app.use('/api/goods', goodsRouter);
 app.use('/file', fileuploadRouter);
 app.use('/upload', express.static('upload'));
+app.use('/todos', todosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
