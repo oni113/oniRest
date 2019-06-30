@@ -1,14 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var http = require('http');
-var request = require('request');
+const express = require('express');
+const router = express.Router();
+const http = require('http');
+const request = require('request');
 const axios = require('axios');
-var dbconfig = require('../config/database.js');
-var mysql = require('mysql');
-var connection = mysql.createConnection(dbconfig);
+const dbconfig = require('../config/database.js');
+const mysql = require('mysql');
+const connection = mysql.createConnection(dbconfig);
 
+//TODO : db transaction 관리 (commit/rollback)
 router.get('/', (req, res, next) => {
-    connection.query('select id, name from todo', function (err, rows) {
+    connection.query(`select id, name from todo`, function (err, rows) {
         if (err) {
             throw err;
         }
@@ -18,15 +19,13 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/add', (req, res, next) => {
-    console.log(req.body);
     if (req.body.name) {
-        var params = [req.body.name];
-        connection.query('insert into todo(name) values (?)', params, function (err, rows, fields) {
+        connection.query(`insert into todo(name) values ('` + req.body.name + `')`, function (err, result) {
             if (err) {
                 throw err;
             }
-            // TODO : new key 값 리턴
-            res.send(rows.id);
+            console.log(result.insertId);
+            res.send(result);
         });
     } else {
         res.status(400);
@@ -34,8 +33,20 @@ router.post('/add', (req, res, next) => {
     }
 });
 
-router.delete('/remove', (req, res, next) = >{
-
+router.delete('/remove/:id', (req, res, next) => {
+    console.log('id : ' + req.params.id);
+    if (req.params.id) {
+        connection.query(`delete from todo where id = '` + req.params.id + `'`, function (err, rows) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            res.send(rows);
+        });
+    } else {
+        res.status(400);
+        next('bad request');
+    }
 });
 
 module.exports = router;
