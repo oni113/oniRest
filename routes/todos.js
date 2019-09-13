@@ -33,6 +33,22 @@ router.post('/add', (req, res, next) => {
     }
 });
 
+router.get('/todo/:id', (req, res, next) => {
+    console.log('id : ' + req.params.id);
+    if (req.params.id) {
+        connection.query(`select id, name from todo where id = '` + req.params.id + `'`, function (err, rows) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            res.send(rows);
+        });
+    } else {
+        res.status(400);
+        next('bad request');
+    }
+});
+
 router.delete('/remove/:id', (req, res, next) => {
     console.log('id : ' + req.params.id);
     if (req.params.id) {
