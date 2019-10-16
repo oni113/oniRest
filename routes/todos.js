@@ -65,4 +65,24 @@ router.delete('/remove/:id', (req, res, next) => {
     }
 });
 
+router.put('/todo/:id', (req, res, next) => {
+    console.log('id : ' + req.params.id);
+    console.log('name : ' + req.body.name);
+    if (req.params.id) {
+        connection.query(`update todo set name = '` + req.body.name + `' where id = '` + req.params.id + `'`, function (err, rows) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            res.send({
+                id : req.params.id,
+                name : req.body.name
+            });
+        });
+    } else {
+        res.status(400);
+        next('bad request');
+    }
+});
+
 module.exports = router;
